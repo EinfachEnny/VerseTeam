@@ -17,7 +17,76 @@
             display: flex;
             min-height: 100vh;
         }
-        /* Seitenleiste (Sidebar) */
+
+        /* Login Modal / Passwort-Sperre */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0e0e10;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .login-box {
+            background-color: #1f1f1f;
+            border: 1px solid #333;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        .login-box h2 {
+            color: #5865F2;
+            margin-bottom: 10px;
+        }
+        .login-box p {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: #121212;
+            color: #fff;
+            font-size: 1em;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .login-box input:focus {
+            border-color: #5865F2;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background-color: #5865F2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .login-box button:hover {
+            background-color: #4752C4;
+        }
+        .error-msg {
+            color: #ED4245;
+            font-size: 0.85em;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Dashboard Layout */
         sidebar {
             width: 260px;
             background-color: #1a1a1a;
@@ -28,7 +97,7 @@
             gap: 15px;
         }
         sidebar h2 {
-            color: #5865F2; /* Discord Blau */
+            color: #5865F2;
             font-size: 1.2em;
             margin-bottom: 10px;
         }
@@ -43,7 +112,6 @@
             background-color: #2a2a2a;
             color: #5865F2;
         }
-        /* Hauptbereich */
         .main-content {
             flex-grow: 1;
             padding: 40px;
@@ -61,10 +129,9 @@
             margin-bottom: 30px;
             text-align: center;
         }
-        /* Suchleiste */
         .search-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 1100px;
             margin-bottom: 20px;
         }
         .search-container input {
@@ -81,7 +148,6 @@
         .search-container input:focus {
             border-color: #5865F2;
         }
-        /* Layout Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -99,7 +165,6 @@
             color: #5865F2;
             margin-bottom: 15px;
         }
-        /* Formular Styling */
         .form-group {
             margin-bottom: 15px;
         }
@@ -118,6 +183,11 @@
             color: #fff;
             outline: none;
         }
+        .form-group input[type="file"] {
+            padding: 8px;
+            background-color: #1a1a1a;
+            cursor: pointer;
+        }
         .btn-submit {
             background-color: #5865F2;
             color: white;
@@ -131,7 +201,6 @@
         .btn-submit:hover {
             background-color: #4752C4;
         }
-        /* Logs Tabelle */
         .logs-table {
             width: 100%;
             border-collapse: collapse;
@@ -147,14 +216,14 @@
             color: #aaa;
         }
         .badge {
-            background-color: #ED4245; /* Rot für Warnung/Ban etc. */
+            background-color: #ED4245;
             color: white;
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.8em;
         }
 
-        /* Automatisches Responsives Design für Handys */
+        /* Mobile Responsive View */
         @media (max-width: 900px) {
             body {
                 flex-direction: column;
@@ -182,7 +251,18 @@
 </head>
 <body>
 
-    <!-- Menü (Passt sich automatisch an Handy & PC an) -->
+    <!-- Login Overlay -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>🔒 Team Login</h2>
+            <p>Bitte gib das Team-Passwort ein, um auf das Dashboard zuzugreifen.</p>
+            <input type="password" id="team-password" placeholder="Passwort eingeben">
+            <button onclick="checkPassword()">Einloggen</button>
+            <p class="error-msg" id="error-msg">Falsches Passwort! Bitte versuche es erneut.</p>
+        </div>
+    </div>
+
+    <!-- Menü -->
     <sidebar>
         <h2>Team Panel</h2>
         <a href="#">🛡️ Dashboard</a>
@@ -202,10 +282,10 @@
 
         <div class="dashboard-grid">
             
-            <!-- Linke Spalte: Neuer Log Eintrag -->
+            <!-- Linke Spalte: Formular -->
             <div class="card">
                 <h3>📝 Neuen Log / Beweis hinzufügen</h3>
-                <form onsubmit="alert('Log erfolgreich eingetragen!'); return false;">
+                <form onsubmit="alert('Log wurde lokal aufgenommen!'); return false;">
                     <div class="form-group">
                         <label>Betroffener User (Name / ID):</label>
                         <input type="text" placeholder="Z.B. Spieler123" required>
@@ -224,15 +304,19 @@
                         <textarea rows="2" placeholder="Was ist passiert?"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Beweis (Link zu Bild/Video):</label>
+                        <label>Beweis-Screenshot hochladen:</label>
+                        <input type="file" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>Oder Beweis-Link (optional):</label>
                         <input type="text" placeholder="https://imgur.com/...">
                     </div>
                     <button type="submit" class="btn-submit">Log abschicken</button>
                 </form>
             </div>
 
-            <!-- Rechte Spalte: Letzte Logs Übersicht -->
-            <div class="card" style="grid-column: span 1;">
+            <!-- Rechte Spalte: Letzte Logs -->
+            <div class="card">
                 <h3>⚡ Aktuelle Logs</h3>
                 <table class="logs-table">
                     <thead>
@@ -248,13 +332,13 @@
                             <td>MaxGamer</td>
                             <td><span class="badge">Mute</span></td>
                             <td>Enny</td>
-                            <td><a href="#" style="color: #5865F2;">Link</a></td>
+                            <td><a href="#" style="color: #5865F2;">Ansehen</a></td>
                         </tr>
                         <tr>
                             <td>BuilderBob</td>
                             <td><span class="badge" style="background-color: #fee75c; color: #000;">Warn</span></td>
                             <td>ModTeam</td>
-                            <td><a href="#" style="color: #5865F2;">Link</a></td>
+                            <td><a href="#" style="color: #5865F2;">Ansehen</a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -262,6 +346,22 @@
 
         </div>
     </div>
+
+    <script>
+        // Standard-Passwort für den Übergang (Kannst du hier ändern)
+        const TEAM_PW = "Team2026";
+
+        function checkPassword() {
+            const inputPw = document.getElementById("team-password").value;
+            const errorMsg = document.getElementById("error-msg");
+            
+            if (inputPw === TEAM_PW) {
+                document.getElementById("login-overlay").style.display = "none";
+            } else {
+                errorMsg.style.display = "block";
+            }
+        }
+    </script>
 
 </body>
 </html>
