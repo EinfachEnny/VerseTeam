@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Team - Dashboard & Logs</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Seitenleiste (Sidebar) */
+        sidebar {
+            width: 260px;
+            background-color: #1a1a1a;
+            border-right: 1px solid #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        sidebar h2 {
+            color: #5865F2; /* Discord Blau */
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        sidebar a {
+            color: #ccc;
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+        }
+        sidebar a:hover {
+            background-color: #2a2a2a;
+            color: #5865F2;
+        }
+        /* Hauptbereich */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        p.subtitle {
+            color: #aaa;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        /* Suchleiste */
+        .search-container {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 14px 22px;
+            font-size: 1em;
+            border-radius: 30px;
+            border: 1px solid #444;
+            background-color: #1f1f1f;
+            color: #fff;
+            outline: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .search-container input:focus {
+            border-color: #5865F2;
+        }
+        /* Layout Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+        }
+        .card {
+            background-color: #1f1f1f;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 25px;
+        }
+        .card h3 {
+            color: #5865F2;
+            margin-bottom: 15px;
+        }
+        /* Formular Styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85em;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: #121212;
+            color: #fff;
+            outline: none;
+        }
+        .btn-submit {
+            background-color: #5865F2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-submit:hover {
+            background-color: #4752C4;
+        }
+        /* Logs Tabelle */
+        .logs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .logs-table th, .logs-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+            font-size: 0.9em;
+        }
+        .logs-table th {
+            color: #aaa;
+        }
+        .badge {
+            background-color: #ED4245; /* Rot für Warnung/Ban etc. */
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+
+        /* Automatisches Responsives Design für Handys */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+            }
+            sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #333;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                padding: 10px;
+            }
+            sidebar h2 {
+                display: none;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menü (Passt sich automatisch an Handy & PC an) -->
+    <sidebar>
+        <h2>Team Panel</h2>
+        <a href="#">🛡️ Dashboard</a>
+        <a href="#">📋 Alle Logs</a>
+        <a href="#">⚙️ Einstellungen</a>
+    </sidebar>
+
+    <!-- Hauptbereich -->
+    <div class="main-content">
+        <h1>Discord Team Dashboard</h1>
+        <p class="subtitle">Zentrale Verwaltung für Logs, Sanktionen und Beweise</p>
+
+        <!-- Suchleiste -->
+        <div class="search-container">
+            <input type="text" placeholder="Suche nach User, Moderator oder Log-ID...">
+        </div>
+
+        <div class="dashboard-grid">
+            
+            <!-- Linke Spalte: Neuer Log Eintrag -->
+            <div class="card">
+                <h3>📝 Neuen Log / Beweis hinzufügen</h3>
+                <form onsubmit="alert('Log erfolgreich eingetragen!'); return false;">
+                    <div class="form-group">
+                        <label>Betroffener User (Name / ID):</label>
+                        <input type="text" placeholder="Z.B. Spieler123" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Log-Typ:</label>
+                        <select>
+                            <option>Member Ban / Kick</option>
+                            <option>Mute / Warnung</option>
+                            <option>Support Ticket Vorfall</option>
+                            <option>Sonstiges</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Grund / Beschreibung:</label>
+                        <textarea rows="2" placeholder="Was ist passiert?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Beweis (Link zu Bild/Video):</label>
+                        <input type="text" placeholder="https://imgur.com/...">
+                    </div>
+                    <button type="submit" class="btn-submit">Log abschicken</button>
+                </form>
+            </div>
+
+            <!-- Rechte Spalte: Letzte Logs Übersicht -->
+            <div class="card" style="grid-column: span 1;">
+                <h3>⚡ Aktuelle Logs</h3>
+                <table class="logs-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Typ</th>
+                            <th>Mod</th>
+                            <th>Beweis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>MaxGamer</td>
+                            <td><span class="badge">Mute</span></td>
+                            <td>Enny</td>
+                            <td><a href="#" style="color: #5865F2;">Link</a></td>
+                        </tr>
+                        <tr>
+                            <td>BuilderBob</td>
+                            <td><span class="badge" style="background-color: #fee75c; color: #000;">Warn</span></td>
+                            <td>ModTeam</td>
+                            <td><a href="#" style="color: #5865F2;">Link</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
